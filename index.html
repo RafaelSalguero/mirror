@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mirror</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #videoContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+        }
+        #webcamVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        #toggleButton {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="videoContainer">
+        <video id="webcamVideo" autoplay playsinline></video>
+    </div>
+    <button id="toggleButton">Switch to Cover</button>
+
+    <script>
+        const video = document.getElementById('webcamVideo');
+        const toggleButton = document.getElementById('toggleButton');
+        let isCoverMode = false;
+
+        async function startWebcam() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } 
+                });
+                video.srcObject = stream;
+            } catch (err) {
+                console.error("Error accessing the webcam:", err);
+                alert("Unable to access the webcam. Please make sure you have granted the necessary permissions.");
+            }
+        }
+
+        function toggleFitMode() {
+            isCoverMode = !isCoverMode;
+            video.style.objectFit = isCoverMode ? 'cover' : 'contain';
+            toggleButton.textContent = isCoverMode ? 'Switch to Contain' : 'Switch to Cover';
+        }
+
+        startWebcam();
+        toggleButton.addEventListener('click', toggleFitMode);
+    </script>
+</body>
+</html>
